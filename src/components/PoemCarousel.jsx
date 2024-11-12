@@ -1,45 +1,30 @@
 import React, { useState } from 'react';
-import {MdChevronLeft, MdChevronRight} from 'react-icons/md';
-import PoemCard from './PoemCard';
+import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 
-const cards = 10;
-const maxVisibility = 3;
-
-
-
-const PoemCarousel = ({ children }) => {
-  const [active, setActive] = useState(2);
-  const count = React.Children.count(children);
+const PoemCarousel = ({ poemCards }) => {
+  const [activePoem, setActivePoem] = useState(0);
+  const numPoems = poemCards.length;
 
   return (
-    <div className="carousel">
-      {active > 0 && (
-        <button className= "nav left" onClick={()=> setActive((i) => i - 1)}>
+    <div className='carousel'>
+      {activePoem > 0 && (
+        <button className='nav left' onClick={() => setActivePoem((i) => i - 1)}>
           <MdChevronLeft/>
         </button>
       )}
-      {React.Children.map(children, (child, i) => (
+      {poemCards.map((poemCard, i) => (
         <div className='card-container'
-        style={{
-          "--active": i === active ? 1 : 0,
-          "--offset": (active - i) / 3,
-          "--direction": Math.sign(active - i),
-          "--abs-offset": Math.abs(active - i) / 3,
-          "pointer-events": active === i ? "auto" : "none",
-          opacity: Math.abs(active - i) >= maxVisibility ? "0" : "1",
-          display: Math.abs(active - i) > maxVisibility ? "none" : "block"
-      }}
-        >
-          {child}
-          </div>
+          style={{display: i !== activePoem ? 'none' : 'block'}}>
+          {poemCard}
+        </div>
       ))}
-      {active < count - 1 && (
-        <button className="nav right" onClick={() => setActive((i) => i + 1)}>
+      {activePoem < numPoems - 1 && (
+        <button className='nav right' onClick={() => setActivePoem((i) => i + 1)}>
           <MdChevronRight/>
         </button>
       )}
-      </div>
-  )
+    </div>
+  );
 };
 
 export default PoemCarousel;

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { FaHeart, FaRegHeart } from "react-icons/fa";
 import PoemCarousel from './PoemCarousel';
 import PoemCard from './PoemCard';
 
@@ -10,11 +9,9 @@ const Poems = () => {
   const [expandedPoemText, setExpandedPoemText] = useState('');
   const [favorites, setFavorites] = useState({});
 
-
   useEffect(() => {
     fetch('http://localhost:3000/api/poems/getAllPoems')
     .then(data => data.json())
-    // .then(data => console.log(data));
     .then(data => setAllPoems(data));
   }, []);
 
@@ -24,15 +21,10 @@ const Poems = () => {
   };
 
   const handleGetPoems = () => {
-    console.log('got poems');
     fetch('http://localhost:3000/api/poems/getAllPoems')
     .then(data => data.json())
     .then(data => console.log(data));
-    
   };
-
-
-
 
   const handleFindSinglePoem = (poemID) => {
     // Check if we're collapsing the currently expanded card
@@ -49,12 +41,11 @@ const Poems = () => {
         })
         .then(poemData => {
           setExpandedPoemId(poemID);
-          setExpandedPoemText(poemData[0].text); // Assuming 'text' holds the poem text
+          setExpandedPoemText(poemData[0].text);
         })
         .catch(error => console.error('Error fetching poem:', error));
     }
   };
-
 
   const handleFavoriteToggle = (poemID) => {
     setFavorites((prevFavorites) => ({
@@ -62,9 +53,10 @@ const Poems = () => {
       [poemID]: !prevFavorites[poemID], // Toggle favorite state
     }));
 
+    /*
     // Perform the fetch request to update the backend about the favorited poem
     const userID = 1; // Need to replace with the actual user id
-    const isFavorited = !!favorites[poemID]; // Check the current favorite state
+    const isFavorited = favorites[poemID]; // Check the current favorite state
     const url = `http://localhost:3000/api/poems/${isFavorited ? 'markFavorite' : 'removeFavorite'}/user/${userID}/poem-${poemID}`;
 
     fetch(url, {
@@ -81,24 +73,24 @@ const Poems = () => {
     .catch(error => {
       console.error('Error updating favorite:', error);
     });
+  */
   };
-  
 
-  return (
-        <PoemCarousel>
-          {allPoems.map((poem, i) => (
-            <PoemCard
-            title={poem.title}
-            author={`${poem.first_name} ${poem.last_name}`}
-            key={{i}}
-            poemID={poem.poem_id}
-            handleFindSinglePoem={() => handleFindSinglePoem(poem.poem_id)}
-            isExpanded={poem.poem_id === expandedPoemId}
-            expandedPoemText={expandedPoemId === poem.poem_id ? expandedPoemText : ''}
-            />
-            ))}
-        </PoemCarousel>
-  );
+  const poemCards = allPoems.map((poem, i) => (
+    <PoemCard
+      title={poem.title}
+      author={`${poem.first_name} ${poem.last_name}`}
+      key={i}
+      poemID={poem.poem_id}
+      handleFindSinglePoem={() => handleFindSinglePoem(poem.poem_id)}
+      isExpanded={poem.poem_id === expandedPoemId}
+      expandedPoemText={expandedPoemId === poem.poem_id ? expandedPoemText : ''}
+      handleFavoriteToggle={handleFavoriteToggle}
+      isFavorited={favorites[poem.poem_id]}
+    />
+    ));
+
+  return <PoemCarousel poemCards={poemCards} />
 };
 
 export default Poems;

@@ -80,7 +80,7 @@ canvas {
   max-height: 500px;
   /* margin: 3rem 3rem; */
   padding: 2rem;
-  background-color: rgba(219, 228, 230, calc(1 - var(--abs-offset) * 1.5));
+  background-color: rgb(219, 228, 230);
   border-radius: 1rem;
   color: #9ca3af;
   text-align: justify;
